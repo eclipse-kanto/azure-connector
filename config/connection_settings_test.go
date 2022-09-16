@@ -34,6 +34,13 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestParseEmptyConnectionString(t *testing.T) {
+	settings := &config.AzureSettings{ConnectionString: ""}
+	logger := logger.NewLogger(log.New(io.Discard, "", log.Ldate), logger.INFO)
+	_, err := config.CreateAzureConnectionSettings(settings, logger)
+	require.Error(t, err)
+}
+
 func TestParseMalformedConnectionString(t *testing.T) {
 	connectionString := "HostName=dummy-hub.azure-devices.net;DeviceId;cGFzc3dvcmQ="
 	settings := &config.AzureSettings{ConnectionString: connectionString}
@@ -328,6 +335,37 @@ func TestCreateProvisioningConnectionSettings(t *testing.T) {
 	assert.Equal(t, test.CertificateKey(), connSettings.DeviceKey)
 }
 
+func TestCreateProvisioningConnectionSettingsWithIdScope(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+
+	provisioningService := mockProvisioningServiceWithIDScope(t, controller, createGetDeviceData(), nil, false, 1, 1)
+	certFileReader := test.CreateDeviceCertificateReader()
+	keyFileReader := test.CreateCertificateKeyReader()
+	connSettings, err := config.PrepareAzureProvisioningConnectionSettings(&config.AzureSettings{}, dummyIdScopeProvider, provisioningService, nil, true, certFileReader, keyFileReader)
+
+	require.NoError(t, err)
+	assert.Equal(t, "dummy-device", connSettings.DeviceID)
+	assert.Equal(t, "dummy-hub.azure-devices.net", connSettings.HostName)
+	assert.Equal(t, "dummy-hub", connSettings.HubName)
+	assert.Nil(t, connSettings.SharedAccessKey)
+	assert.Equal(t, 0*time.Second, connSettings.TokenValidity)
+	assert.Equal(t, test.DeviceCertificate(), connSettings.DeviceCert)
+	assert.Equal(t, test.CertificateKey(), connSettings.DeviceKey)
+}
+
+func TestCreateProvisioningConnectionSettingsWithIdScopeError(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+
+	provisioningService := mockProvisioningServiceWithIDScope(t, controller, createGetDeviceData(), nil, false, 0, 1)
+	certFileReader := test.CreateDeviceCertificateReader()
+	keyFileReader := test.CreateCertificateKeyReader()
+	_, err := config.PrepareAzureProvisioningConnectionSettings(&config.AzureSettings{}, dummyIdScopeProviderWithError, provisioningService, nil, true, certFileReader, keyFileReader)
+
+	require.Error(t, err)
+}
+
 func TestCreateProvisioningConnectionSettingsExistingProvisioningFile(t *testing.T) {
 	controller := gomock.NewController(t)
 	defer controller.Finish()
@@ -451,9 +489,28 @@ func mockProvisioningService(t *testing.T, controller *gomock.Controller, device
 	return provisioningService
 }
 
+func mockProvisioningServiceWithIDScope(t *testing.T, controller *gomock.Controller, deviceData *config.AzureDeviceData, deviceDataError error, hasProvisioningFile bool, timesGetDataCalled, timesInitCalled int) *mock.MockProvisioningService {
+	provisioningService := mock.NewMockProvisioningService(controller)
+	provisioningService.EXPECT().GetDeviceData("dummyIdScope", gomock.Any()).Return(deviceData, deviceDataError).Times(timesGetDataCalled)
+	provisioningService.EXPECT().Init(gomock.Any(), gomock.Any()).Do(func(client config.ProvisioningHTTPClient, provisioningFile io.ReadWriter) {
+		if hasProvisioningFile != (client == nil) {
+			t.Fail()
+		}
+	}).Times(timesInitCalled)
+	return provisioningService
+}
+
 func createGetDeviceData() *config.AzureDeviceData {
 	return &config.AzureDeviceData{
 		AssignedHub: "dummy-hub.azure-devices.net",
 		DeviceID:    "dummy-device",
 	}
+}
+
+func dummyIdScopeProvider(connSettings *config.AzureConnectionSettings) (string, error) {
+	return "dummyIdScope", nil
+}
+
+func dummyIdScopeProviderWithError(connSettings *config.AzureConnectionSettings) (string, error) {
+	return "", errors.New("invalid url")
 }

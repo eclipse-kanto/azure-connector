@@ -56,8 +56,13 @@ type AzureConnectionSettings struct {
 	*SharedAccessKey
 }
 
-// CreateAzureConnectionSettings creates the configuration data for establishing connection to the Azure IoT Hub.
+// CreateAzureConnectionSettings creates the configuration data for establishing connection to the Azure IoT Hub, using no IDScopeProvider.
 func CreateAzureConnectionSettings(settings *AzureSettings, log logger.Logger) (*AzureConnectionSettings, error) {
+	return PrepareAzureConnectionSettings(settings, nil, log)
+}
+
+// PrepareAzureConnectionSettings creates the configuration data for establishing connection to the Azure IoT Hub, allowing usage of IDScopeProvider.
+func PrepareAzureConnectionSettings(settings *AzureSettings, idScopeProvider IDScopeProvider, log logger.Logger) (*AzureConnectionSettings, error) {
 	connProps, err := parseConnectionString(settings.ConnectionString)
 	if err != nil {
 		return nil, err
@@ -95,8 +100,9 @@ func CreateAzureConnectionSettings(settings *AzureSettings, log logger.Logger) (
 		return nil, err
 	}
 
-	connSettings, err := CreateAzureProvisioningConnectionSettings(
+	connSettings, err := PrepareAzureProvisioningConnectionSettings(
 		settings,
+		idScopeProvider,
 		NewProvisioningService(log),
 		provisioningFile,
 		useProvisioningClient,
@@ -133,9 +139,22 @@ func CreateAzureCertificateConnectionSettings(
 	return connSettings, nil
 }
 
-// CreateAzureProvisioningConnectionSettings creates the configuration data for establishing connection to Azure device that requires device provisioning.
+// CreateAzureProvisioningConnectionSettings creates the configuration data for establishing connection to Azure device that requires device provisioning, using no IDScopeProvider.
 func CreateAzureProvisioningConnectionSettings(
 	settings *AzureSettings,
+	provisioningService ProvisioningService,
+	provisioningFile io.ReadWriter,
+	useProvisioningClient bool,
+	certFileReader io.Reader,
+	keyFileReader io.Reader,
+) (*AzureConnectionSettings, error) {
+	return PrepareAzureProvisioningConnectionSettings(settings, nil, provisioningService, provisioningFile, useProvisioningClient, certFileReader, keyFileReader)
+}
+
+// PrepareAzureProvisioningConnectionSettings creates the configuration data for establishing connection to Azure device that requires device provisioning, allowing usage of IDScopeProvider.
+func PrepareAzureProvisioningConnectionSettings(
+	settings *AzureSettings,
+	idScopeProvider IDScopeProvider,
 	provisioningService ProvisioningService,
 	provisioningFile io.ReadWriter,
 	useProvisioningClient bool,
@@ -156,6 +175,13 @@ func CreateAzureProvisioningConnectionSettings(
 		}
 	}
 	provisioningService.Init(client, provisioningFile)
+
+	if len(settings.IDScope) == 0 && idScopeProvider != nil {
+		settings.IDScope, err = idScopeProvider(connSettings)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	azureDeviceData, err := provisioningService.GetDeviceData(settings.IDScope, connSettings)
 	if err != nil {
