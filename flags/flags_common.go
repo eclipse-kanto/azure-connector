@@ -15,7 +15,6 @@ package flags
 import (
 	"flag"
 
-	conn "github.com/eclipse-kanto/suite-connector/config"
 	"github.com/eclipse-kanto/suite-connector/flags"
 	"github.com/eclipse-kanto/suite-connector/logger"
 
@@ -55,13 +54,13 @@ func Add(f *flag.FlagSet, settings *config.AzureSettings) {
 		flagSASTokenValidity, def.SASTokenValidity,
 		"The validity period for the generated SAS token for device authentication",
 	)
-	f.StringVar(&settings.AllowedLocalTopicsList,
-		"allowedLocalTopicsList", def.AllowedLocalTopicsList,
-		"List of allowed Local topics",
+	f.StringVar(&settings.PassthroughTelemetryTopic,
+		"passthroughTelemetryTopic", def.PassthroughTelemetryTopic,
+		"The list of passthrough telemetry topics the cloud agent listens to.",
 	)
-	f.StringVar(&settings.AllowedCloudMessageTypesList,
-		"allowedCloudMessageTypesList", def.AllowedCloudMessageTypesList,
-		"List of allowed cloud message types",
+	f.StringVar(&settings.PassthroughCommandTopic,
+		"passthroughCommandTopic", def.PassthroughCommandTopic,
+		"The passthrough command topic where all messages from the cloud are forwarded to.",
 	)
 	f.StringVar(&settings.IDScope, flagIDScope, def.IDScope,
 		"ID Scope from Azure Device Provisioning Service",
@@ -71,24 +70,7 @@ func Add(f *flag.FlagSet, settings *config.AzureSettings) {
 	flags.AddLocalBroker(f, &settings.LocalConnectionSettings, &def.LocalConnectionSettings)
 	flags.AddLog(f, &settings.LogSettings, &def.LogSettings)
 
-	AddTLS(f, &settings.TLSSettings, &def.TLSSettings)
-}
-
-// AddTLS adds cacert, cert and key flags only as minimized TLS connection settings.
-func AddTLS(f *flag.FlagSet, settings, def *conn.TLSSettings) {
-
-	f.StringVar(&settings.CACert,
-		flagCACert, def.CACert,
-		"A PEM encoded CA certificates `file`",
-	)
-	f.StringVar(&settings.Cert,
-		"cert", def.Cert,
-		"A PEM encoded certificate `file` for cloud access",
-	)
-	f.StringVar(&settings.Key,
-		"key", def.Key,
-		"A PEM encoded unencrypted private key `file` for cloud access",
-	)
+	flags.AddTLS(f, &settings.TLSSettings, &def.TLSSettings)
 }
 
 // Copy configured all set flag values to map.

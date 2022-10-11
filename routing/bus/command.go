@@ -13,19 +13,14 @@
 package bus
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/eclipse-kanto/suite-connector/connector"
-	"github.com/pkg/errors"
 
 	"github.com/eclipse-kanto/azure-connector/config"
 	"github.com/eclipse-kanto/azure-connector/routing"
-	routingmessage "github.com/eclipse-kanto/azure-connector/routing/message"
-	"github.com/eclipse-kanto/azure-connector/routing/message/handlers/command"
 	handlers "github.com/eclipse-kanto/azure-connector/routing/message/handlers/common"
-	"github.com/eclipse-kanto/azure-connector/util"
 )
 
 const (
@@ -64,15 +59,10 @@ func CommandBus(router *message.Router,
 }
 
 func (h *commandBusHandler) HandleMessage(msg *message.Message) ([]*message.Message, error) {
-	cloudMessage := &routingmessage.CloudMessage{}
-	if err := json.Unmarshal(msg.Payload, cloudMessage); err != nil {
-		return nil, errors.Wrap(err, "cannot deserialize cloud message")
-	}
-	msg.SetContext(command.SetMessageToContext(msg, cloudMessage))
 	for _, commandHandler := range h.commandHandlers {
-		if util.ContainsString(commandHandler.Topics(), cloudMessage.CommandName) {
-			return commandHandler.HandleMessage(msg)
+		if msg, err := commandHandler.HandleMessage(msg); err == nil {
+			return msg, nil
 		}
 	}
-	return nil, fmt.Errorf("no message handler for command name '%s'", cloudMessage.CommandName)
+	return nil, fmt.Errorf("no command message handler for message '%v'", string(msg.Payload))
 }

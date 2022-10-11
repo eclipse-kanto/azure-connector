@@ -1,7 +1,7 @@
 {
 	"tenantId": "tenant7172",
-	"allowedLocalTopicsList": "local",
-	"allowedCloudMessageTypesList": "cloud",
+	"passthroughTelemetryTopic": "from-device-to-cloud",
+	"passthroughCommandTopic": "from-cloud-to-device",
 	"cacert": "",
 	"localUsername": "localUsername_config",
 	"localPassword": "localPassword_config",

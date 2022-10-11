@@ -22,13 +22,14 @@ import (
 
 // AzureSettings represents all configurable data that is used to setup the Cloud Agent.
 type AzureSettings struct {
-	TenantID                     string `json:"tenantId"`
-	ConnectionString             string `json:"connectionString"`
-	SASTokenValidity             string `json:"sasTokenValidity"`
-	MessageMapperConfig          string `json:"messageMapperConfig"`
-	AllowedLocalTopicsList       string `json:"allowedLocalTopicsList"`
-	AllowedCloudMessageTypesList string `json:"allowedCloudMessageTypesList"`
-	IDScope                      string `json:"idScope"`
+	TenantID         string `json:"tenantId"`
+	ConnectionString string `json:"connectionString"`
+	SASTokenValidity string `json:"sasTokenValidity"`
+	IDScope          string `json:"idScope"`
+
+	// TODO: issue #19 - move passthrough topic settings outside AzureSettings
+	PassthroughCommandTopic   string `json:"passthroughCommandTopic"`
+	PassthroughTelemetryTopic string `json:"passthroughTelemetryTopic"`
 
 	config.LocalConnectionSettings
 	logger.LogSettings
@@ -41,7 +42,6 @@ func DefaultSettings() *AzureSettings {
 	defAzureSettings := &AzureSettings{
 		TenantID:                "defaultTenant",
 		SASTokenValidity:        "1h",
-		MessageMapperConfig:     "message-mapper-config.json",
 		LocalConnectionSettings: def.LocalConnectionSettings,
 		TLSSettings: config.TLSSettings{
 			CACert: def.CACert,
@@ -50,6 +50,8 @@ func DefaultSettings() *AzureSettings {
 	}
 	defAzureSettings.LogFile = "logs/azure-connector.log"
 	defAzureSettings.LogFileMaxAge = 28
+	defAzureSettings.PassthroughTelemetryTopic = "device-to-cloud"
+	defAzureSettings.PassthroughCommandTopic = "cloud-to-device"
 	return defAzureSettings
 }
 
