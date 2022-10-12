@@ -21,7 +21,7 @@ import (
 
 	"github.com/eclipse-kanto/azure-connector/config"
 	"github.com/eclipse-kanto/azure-connector/routing"
-	handlers "github.com/eclipse-kanto/azure-connector/routing/message/handlers/common"
+	"github.com/eclipse-kanto/azure-connector/routing/message/handlers"
 )
 
 const (

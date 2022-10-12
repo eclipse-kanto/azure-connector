@@ -19,7 +19,7 @@ import (
 	"github.com/eclipse-kanto/suite-connector/connector"
 
 	"github.com/eclipse-kanto/azure-connector/config"
-	handlers "github.com/eclipse-kanto/azure-connector/routing/message/handlers/common"
+	"github.com/eclipse-kanto/azure-connector/routing/message/handlers"
 )
 
 // TelemetryBus creates the telemetry message bus for processing & forwarding the telemetry messages from the local MQTT broker to the Azure IoT Hub.
