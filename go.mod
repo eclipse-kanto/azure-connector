@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/ThreeDotsLabs/watermill v1.1.1
-	github.com/eclipse-kanto/suite-connector v0.1.0-M1.0.20220701113052-ccfe8296aa68
+	github.com/eclipse-kanto/suite-connector v0.1.0-M2
 	github.com/golang/mock v1.6.0
 	github.com/imdario/mergo v0.3.12
 	github.com/pkg/errors v0.9.1

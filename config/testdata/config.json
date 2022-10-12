@@ -2,7 +2,7 @@
 	"tenantId": "tenant7172",
 	"passthroughTelemetryTopics": "from-device-to-cloud",
 	"passthroughCommandTopic": "from-cloud-to-device",
-	"cacert": "",
+	"caCert": "",
 	"localUsername": "localUsername_config",
 	"localPassword": "localPassword_config",
 	"logFile": "logFile_config",

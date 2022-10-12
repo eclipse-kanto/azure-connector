@@ -73,7 +73,7 @@ func TestFlagsSet(t *testing.T) {
 		"localAddress",
 		"localUsername",
 		"localPassword",
-		"cacert",
+		"caCert",
 		"cert",
 		"key",
 		"logFile",
