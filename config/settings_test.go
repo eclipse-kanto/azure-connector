@@ -59,7 +59,7 @@ func TestConfigInvalid(t *testing.T) {
 func TestConfig(t *testing.T) {
 	expSettings := DefaultSettings()
 	expSettings.TenantID = "tenant7172"
-	expSettings.PassthroughTelemetryTopic = "from-device-to-cloud"
+	expSettings.PassthroughTelemetryTopics = "from-device-to-cloud"
 	expSettings.PassthroughCommandTopic = "from-cloud-to-device"
 	expSettings.LocalUsername = "localUsername_config"
 	expSettings.LocalPassword = "localPassword_config"
@@ -82,7 +82,7 @@ func TestDefaults(t *testing.T) {
 	assert.Equal(t, "defaultTenant", settings.TenantID)
 	assert.Empty(t, settings.ConnectionString)
 	assert.Equal(t, "1h", settings.SASTokenValidity)
-	assert.Equal(t, "device-to-cloud", settings.PassthroughTelemetryTopic)
+	assert.Equal(t, "device-to-cloud", settings.PassthroughTelemetryTopics)
 	assert.Equal(t, "cloud-to-device", settings.PassthroughCommandTopic)
 	assert.Empty(t, settings.IDScope)
 

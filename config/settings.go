@@ -20,16 +20,15 @@ import (
 	"github.com/eclipse-kanto/suite-connector/util"
 )
 
-// AzureSettings represents all configurable data that is used to setup the Cloud Agent.
+// AzureSettings represents all configurable data that is used to setup the azure connector.
 type AzureSettings struct {
 	TenantID         string `json:"tenantId"`
 	ConnectionString string `json:"connectionString"`
 	SASTokenValidity string `json:"sasTokenValidity"`
 	IDScope          string `json:"idScope"`
 
-	// TODO: issue #19 - move passthrough topic settings outside AzureSettings
-	PassthroughCommandTopic   string `json:"passthroughCommandTopic"`
-	PassthroughTelemetryTopic string `json:"passthroughTelemetryTopic"`
+	PassthroughCommandTopic    string `json:"passthroughCommandTopic"`
+	PassthroughTelemetryTopics string `json:"passthroughTelemetryTopics"`
 
 	config.LocalConnectionSettings
 	logger.LogSettings
@@ -50,7 +49,7 @@ func DefaultSettings() *AzureSettings {
 	}
 	defAzureSettings.LogFile = "logs/azure-connector.log"
 	defAzureSettings.LogFileMaxAge = 28
-	defAzureSettings.PassthroughTelemetryTopic = "device-to-cloud"
+	defAzureSettings.PassthroughTelemetryTopics = "device-to-cloud"
 	defAzureSettings.PassthroughCommandTopic = "cloud-to-device"
 	return defAzureSettings
 }

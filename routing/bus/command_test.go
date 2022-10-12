@@ -97,7 +97,7 @@ func TestFirstValidCommandMessageHandler(t *testing.T) {
 	commandHandler3 := test.NewDummyFailureHandler(testCommandHandlerName+"_3", nil, errors.New(""))
 	commandHandlers := []handlers.MessageHandler{commandHandler1, commandHandler2, commandHandler3}
 
-	busHandler := &commandBusHandler{commandHandlers: commandHandlers}
+	busHandler := &commandBusHandler{logger: watermill.NopLogger{}, commandHandlers: commandHandlers}
 
 	outgoingMessages, err := busHandler.HandleMessage(message.NewMessage(watermill.NewUUID(), message.Payload("dummy_payload")))
 	require.NoError(t, err)
@@ -112,7 +112,7 @@ func TestMultipleCommandMessageHandlers(t *testing.T) {
 	commandHandler3 := test.NewDummyMessageHandler(testCommandHandlerName+"_3", nil, nil)
 	commandHandlers := []handlers.MessageHandler{commandHandler1, commandHandler2, commandHandler3}
 
-	busHandler := &commandBusHandler{commandHandlers: commandHandlers}
+	busHandler := &commandBusHandler{logger: watermill.NopLogger{}, commandHandlers: commandHandlers}
 
 	outgoingMessages, err := busHandler.HandleMessage(message.NewMessage(watermill.NewUUID(), message.Payload("dummy_payload")))
 	require.NoError(t, err)

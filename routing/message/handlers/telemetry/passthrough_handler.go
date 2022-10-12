@@ -27,13 +27,13 @@ const (
 )
 
 type passthroughMessageHandler struct {
-	connSettings              *config.AzureConnectionSettings
-	passthroughTelemetryTopic []string
+	connSettings               *config.AzureConnectionSettings
+	passthroughTelemetryTopics []string
 }
 
 func (h *passthroughMessageHandler) Init(settings *config.AzureSettings, connSettings *config.AzureConnectionSettings) error {
 	h.connSettings = connSettings
-	h.passthroughTelemetryTopic = strings.Split(settings.PassthroughTelemetryTopic, ",")
+	h.passthroughTelemetryTopics = strings.Split(settings.PassthroughTelemetryTopics, ",")
 	return nil
 }
 
@@ -50,7 +50,7 @@ func (h *passthroughMessageHandler) Name() string {
 }
 
 func (h *passthroughMessageHandler) Topics() []string {
-	return h.passthroughTelemetryTopic
+	return h.passthroughTelemetryTopics
 }
 
 func init() {

@@ -29,8 +29,8 @@ import (
 
 func TestPassthroughMessageHandler(t *testing.T) {
 	settings := &config.AzureSettings{
-		ConnectionString:          "HostName=dummy-hub.azure-devices.net;DeviceId=dummy-device;SharedAccessKey=dGVzdGF6dXJlc2hhcmVkYWNjZXNza2V5",
-		PassthroughTelemetryTopic: "localTopic1,localTopic2,localTopic3",
+		ConnectionString:           "HostName=dummy-hub.azure-devices.net;DeviceId=dummy-device;SharedAccessKey=dGVzdGF6dXJlc2hhcmVkYWNjZXNza2V5",
+		PassthroughTelemetryTopics: "localTopic1,localTopic2,localTopic3",
 	}
 	logger := logger.NewLogger(log.New(io.Discard, "", log.Ldate), logger.INFO)
 	connSettings, err := config.PrepareAzureConnectionSettings(settings, nil, logger)
@@ -39,7 +39,7 @@ func TestPassthroughMessageHandler(t *testing.T) {
 
 	require.NoError(t, messageHandler.Init(settings, connSettings))
 	assert.Equal(t, messageHandler.connSettings, connSettings)
-	for i, localTopic := range messageHandler.passthroughTelemetryTopic {
+	for i, localTopic := range messageHandler.passthroughTelemetryTopics {
 		assert.Equal(t, "localTopic"+strconv.Itoa(i+1), localTopic)
 	}
 	assert.Equal(t, passthroughHandlerName, messageHandler.Name())

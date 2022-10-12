@@ -66,7 +66,7 @@ func TestFlagsSet(t *testing.T) {
 		"configFile",
 		"tenantId",
 		"connectionString",
-		"passthroughTelemetryTopic",
+		"passthroughTelemetryTopics",
 		"passthroughCommandTopic",
 		"sasTokenValidity",
 		"idScope",

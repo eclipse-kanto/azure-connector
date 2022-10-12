@@ -22,7 +22,6 @@ import (
 const commandPassthroughHandlerName = "command_passthrough_handler"
 
 // A simple command passthrough handler that forwards all cloud-to-device messages from Azure IoT Hub to local MQTT broker on a preconfigured topic.
-// TODO: to be extended in the future as part of issue #21
 type commandPassthroughMessageHandler struct {
 	passthroughCommandTopic string
 }

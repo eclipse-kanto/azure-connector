@@ -22,13 +22,13 @@ import (
 )
 
 const (
-	flagCACert           = "cacert"
+	flagCACert           = "caCert"
 	flagTenantID         = "tenantId"
 	flagIDScope          = "idScope"
 	flagSASTokenValidity = "sasTokenValidity"
 )
 
-// AddGlobal adds the Cloud Agent global flags.
+// AddGlobal adds the azure connector global flags.
 func AddGlobal(f *flag.FlagSet) (configFile *string) {
 	return flags.AddGlobal(f)
 }
@@ -38,7 +38,7 @@ func ConfigCheck(logger logger.Logger, configFile string) {
 	flags.ConfigCheck(logger, configFile)
 }
 
-// Add adds the Cloud Agent flags and uses the provided settings to collect the provided values.
+// Add adds the azure connector flags and uses the given settings structure to store the values of the flags.
 func Add(f *flag.FlagSet, settings *config.AzureSettings) {
 	def := config.DefaultSettings()
 
@@ -54,16 +54,16 @@ func Add(f *flag.FlagSet, settings *config.AzureSettings) {
 		flagSASTokenValidity, def.SASTokenValidity,
 		"The validity period for the generated SAS token for device authentication",
 	)
-	f.StringVar(&settings.PassthroughTelemetryTopic,
-		"passthroughTelemetryTopic", def.PassthroughTelemetryTopic,
-		"The list of passthrough telemetry topics the cloud agent listens to.",
+	f.StringVar(&settings.PassthroughTelemetryTopics,
+		"passthroughTelemetryTopics", def.PassthroughTelemetryTopics,
+		"The comma-separated list of passthrough telemetry topics the azure connector listens to on the local broker",
 	)
 	f.StringVar(&settings.PassthroughCommandTopic,
 		"passthroughCommandTopic", def.PassthroughCommandTopic,
-		"The passthrough command topic where all messages from the cloud are forwarded to.",
+		"The passthrough command topic where all messages from the cloud are forwarded to on the local broker",
 	)
 	f.StringVar(&settings.IDScope, flagIDScope, def.IDScope,
-		"ID Scope from Azure Device Provisioning Service",
+		"ID scope for Azure Device Provisioning service",
 	)
 
 	flags.AddLocalBroker(f, &settings.LocalConnectionSettings, &def.LocalConnectionSettings)
@@ -72,7 +72,7 @@ func Add(f *flag.FlagSet, settings *config.AzureSettings) {
 	flags.AddTLS(f, &settings.TLSSettings, &def.TLSSettings)
 }
 
-// Copy configured all set flag values to map.
+// Copy copies all configured flag values to map.
 func Copy(f *flag.FlagSet) map[string]interface{} {
 	m := make(map[string]interface{}, f.NFlag())
 

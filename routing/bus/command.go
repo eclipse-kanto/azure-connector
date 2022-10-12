@@ -15,6 +15,7 @@ package bus
 import (
 	"fmt"
 
+	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/eclipse-kanto/suite-connector/connector"
 
@@ -28,6 +29,7 @@ const (
 )
 
 type commandBusHandler struct {
+	logger          watermill.LoggerAdapter
 	commandHandlers []handlers.MessageHandler
 }
 
@@ -41,7 +43,9 @@ func CommandBus(router *message.Router,
 ) {
 	//Azure IoT Hub -> Message bus -> Mosquitto Broker -> Gateway
 	initCommandHandlers := []handlers.MessageHandler{}
-	commandBusHandler := &commandBusHandler{}
+	commandBusHandler := &commandBusHandler{
+		logger: router.Logger(),
+	}
 	for _, commandHandler := range commandHandlers {
 		if err := commandHandler.Init(settings, connSettings); err != nil {
 			continue
@@ -60,9 +64,12 @@ func CommandBus(router *message.Router,
 
 func (h *commandBusHandler) HandleMessage(msg *message.Message) ([]*message.Message, error) {
 	for _, commandHandler := range h.commandHandlers {
-		if msg, err := commandHandler.HandleMessage(msg); err == nil {
+		msg, err := commandHandler.HandleMessage(msg)
+		if err == nil {
 			return msg, nil
 		}
+		h.logger.Error("error handling command message", err, nil)
 	}
-	return nil, fmt.Errorf("no command message handler for message '%v'", string(msg.Payload))
+	return nil, fmt.Errorf("cannot handle command message '%v'", string(msg.Payload))
+
 }
