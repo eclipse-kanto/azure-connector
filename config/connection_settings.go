@@ -38,6 +38,13 @@ const (
 	propertyKeySharedAccessKeyName = "SharedAccessKeyName"
 )
 
+// CloudConnectionInfo contains properties related to the cloud connection that may not be known at the start of the connector.
+type CloudConnectionInfo struct {
+	HubName  string
+	HostName string
+	DeviceID string
+}
+
 // SharedAccessKey contains the shared access key for generating SAS token for device authentication.
 type SharedAccessKey struct {
 	SharedAccessKeyName    string
@@ -46,14 +53,19 @@ type SharedAccessKey struct {
 
 // AzureConnectionSettings contains the configuration data for establishing connection to the Azure IoT Hub.
 type AzureConnectionSettings struct {
-	HubName       string
-	HostName      string
-	DeviceID      string
+	*CloudConnectionInfo
+
 	DeviceCert    string
 	DeviceKey     string
 	TokenValidity time.Duration
 
 	*SharedAccessKey
+}
+
+func newEmptyConnectionSettings() *AzureConnectionSettings {
+	return &AzureConnectionSettings{
+		CloudConnectionInfo: &CloudConnectionInfo{},
+	}
 }
 
 // PrepareAzureConnectionSettings prepares the configuration data for establishing connection to the Azure IoT Hub, allowing usage of IDScopeProvider.
@@ -118,7 +130,7 @@ func PrepareAzureCertificateConnectionSettings(
 	keyFileReader io.Reader,
 ) (*AzureConnectionSettings, error) {
 	var err error
-	connSettings := &AzureConnectionSettings{}
+	connSettings := newEmptyConnectionSettings()
 	if err = attachCertificateInfo(connSettings, certFileReader, keyFileReader); err != nil {
 		return nil, err
 	}
@@ -144,7 +156,7 @@ func PrepareAzureProvisioningConnectionSettings(
 	certFileReader io.Reader,
 	keyFileReader io.Reader,
 ) (*AzureConnectionSettings, error) {
-	connSettings := &AzureConnectionSettings{}
+	connSettings := newEmptyConnectionSettings()
 	err := attachCertificateInfo(connSettings, certFileReader, keyFileReader)
 	if err != nil {
 		return nil, err
@@ -191,7 +203,7 @@ func CreateAzureSASTokenConnectionSettings(
 	logger logger.Logger,
 ) (*AzureConnectionSettings, error) {
 	var err error
-	connSettings := &AzureConnectionSettings{}
+	connSettings := newEmptyConnectionSettings()
 	if value, ok := connStringProperties[propertyKeyHostName]; ok {
 		connSettings.HostName = value
 	} else {
@@ -262,7 +274,6 @@ func attachCertificateInfo(connSettings *AzureConnectionSettings, certFileReader
 			return err
 		}
 	}
-
 	return nil
 }
 
