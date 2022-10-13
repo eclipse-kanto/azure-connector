@@ -25,7 +25,7 @@ const commandHandlerName = "passthrough_command_handler"
 
 // A simple command passthrough handler that forwards all cloud-to-device messages from Azure IoT Hub to local MQTT broker on a preconfigured topic.
 type commandHandler struct {
-	topic string
+	topics string
 }
 
 // CreateCommandHandler instantiates a new command handler that forward cloud-to-device messages to the local message broker using the given topic.
@@ -35,7 +35,7 @@ func CreateCommandHandler() handlers.MessageHandler {
 
 // Init gets the local topic to publish the messages.
 func (h *commandHandler) Init(settings *config.AzureSettings, connSettings *config.AzureConnectionSettings) error {
-	h.topic = settings.PassthroughCommandTopic
+	h.topics = settings.PassthroughCommandTopic
 	return nil
 }
 
@@ -43,7 +43,7 @@ func (h *commandHandler) Init(settings *config.AzureSettings, connSettings *conf
 func (h *commandHandler) HandleMessage(msg *message.Message) ([]*message.Message, error) {
 	msgID := watermill.NewUUID()
 	outgoingMessage := message.NewMessage(msgID, msg.Payload)
-	outgoingMessage.SetContext(connector.SetTopicToCtx(outgoingMessage.Context(), h.topic))
+	outgoingMessage.SetContext(connector.SetTopicToCtx(outgoingMessage.Context(), h.topics))
 	return []*message.Message{outgoingMessage}, nil
 }
 
@@ -52,7 +52,7 @@ func (h *commandHandler) Name() string {
 	return commandHandlerName
 }
 
-// Topics returns the configurable topic, actually never used.
+// Topics returns the configurable topics, actually never used for the command handlers.
 func (h *commandHandler) Topics() []string {
-	return []string{h.topic}
+	return []string{h.topics}
 }

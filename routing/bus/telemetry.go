@@ -15,6 +15,7 @@ package bus
 import (
 	"strings"
 
+	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/eclipse-kanto/suite-connector/connector"
 
@@ -34,11 +35,15 @@ func TelemetryBus(
 	//Gateway -> Mosquitto Broker -> Message bus -> Azure IoT Hub
 	for _, telemetryHandler := range telemetryHandlers {
 		if err := telemetryHandler.Init(settings, connSettings); err != nil {
+			logFields := watermill.LogFields{"handler_name": telemetryHandler.Name()}
+			router.Logger().Error("skipping telemetry handler that cannot be initialized", err, logFields)
 			continue
 		}
 		handlerName := telemetryHandler.Name()
 		handlerTopics := telemetryHandler.Topics()
 		if len(handlerTopics) == 0 {
+			logFields := watermill.LogFields{"handler_name": telemetryHandler.Name()}
+			router.Logger().Error("skipping telemetry handler without any topics", nil, logFields)
 			continue
 		}
 		router.AddHandler(handlerName,

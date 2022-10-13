@@ -45,7 +45,7 @@ func (h *telemetryHandler) Init(settings *config.AzureSettings, connSettings *co
 	return nil
 }
 
-// HandleMessage creates a new message with the same payload as the incoming message and sets the correct topic so that the message can be forwarded to cloudAzure Iot Hub
+// HandleMessage creates a new message with the same payload as the incoming message and sets the correct topic so that the message can be forwarded to Azure Iot Hub
 func (h *telemetryHandler) HandleMessage(msg *message.Message) ([]*message.Message, error) {
 	msgID := watermill.NewUUID()
 	outgoingMessage := message.NewMessage(msgID, msg.Payload)
