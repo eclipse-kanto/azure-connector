@@ -98,8 +98,8 @@ func TestTelemetryMessageHandlerInitializationError(t *testing.T) {
 	test.AssertNoRouterHandlers(t, router)
 }
 
-func setupTestRouter(deviceID string) (*message.Router, *config.CloudConnectionInfo) {
-	connInfo := &config.CloudConnectionInfo{
+func setupTestRouter(deviceID string) (*message.Router, *config.RemoteConnectionInfo) {
+	connInfo := &config.RemoteConnectionInfo{
 		DeviceID: deviceID,
 	}
 	router, _ := message.NewRouter(message.RouterConfig{}, watermill.NopLogger{})

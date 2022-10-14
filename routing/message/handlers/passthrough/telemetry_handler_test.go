@@ -33,7 +33,7 @@ func TestCreateTelemetryHandler(t *testing.T) {
 
 func TestHandleTelemetryMessage(t *testing.T) {
 	handler := CreateTelemetryHandler("telemetry_topic")
-	require.NoError(t, handler.Init(&config.CloudConnectionInfo{DeviceID: "dummy_device"}))
+	require.NoError(t, handler.Init(&config.RemoteConnectionInfo{DeviceID: "dummy_device"}))
 
 	payload := "dummy_message"
 	outgoingMessages, err := handler.HandleMessage(&message.Message{Payload: []byte(payload)})

@@ -26,7 +26,7 @@ func TelemetryBus(
 	router *message.Router,
 	azurePub message.Publisher,
 	mosquittoSub message.Subscriber,
-	connInfo *config.CloudConnectionInfo,
+	connInfo *config.RemoteConnectionInfo,
 	telemetryHandlers []handlers.TelemetryHandler,
 ) {
 	//Gateway -> Mosquitto Broker -> Message bus -> Azure IoT Hub

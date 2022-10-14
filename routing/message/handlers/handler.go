@@ -17,9 +17,9 @@ import (
 	"github.com/eclipse-kanto/azure-connector/config"
 )
 
-// MessageHandler represents the internal interface for implementing a message handler.
+// messageHandler represents the internal interface for implementing a message handler.
 type messageHandler interface {
-	Init(connInfo *config.CloudConnectionInfo) error
+	Init(connInfo *config.RemoteConnectionInfo) error
 	HandleMessage(message *message.Message) ([]*message.Message, error)
 	Name() string
 }

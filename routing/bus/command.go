@@ -37,7 +37,7 @@ type commandBusHandler struct {
 func CommandBus(router *message.Router,
 	mosquittoPub message.Publisher,
 	azureSub message.Subscriber,
-	connInfo *config.CloudConnectionInfo,
+	connInfo *config.RemoteConnectionInfo,
 	commandHandlers []handlers.CommandHandler,
 ) {
 	//Azure IoT Hub -> Message bus -> Mosquitto Broker -> Gateway

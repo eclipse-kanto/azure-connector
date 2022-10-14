@@ -71,10 +71,10 @@ func startRouter(
 	azureSub := connector.NewSubscriber(azureClient, connector.QosAtMostOnce, false, logger, nil)
 	mosquittoSub := connector.NewSubscriber(cloudClient, connector.QosAtLeastOnce, false, router.Logger(), nil)
 
-	routingbus.TelemetryBus(router, azurePub, mosquittoSub, &connSettings.CloudConnectionInfo, telemetryHandlers)
+	routingbus.TelemetryBus(router, azurePub, mosquittoSub, &connSettings.RemoteConnectionInfo, telemetryHandlers)
 
 	cloudPub := connector.NewPublisher(cloudClient, connector.QosAtLeastOnce, router.Logger(), nil)
-	routingbus.CommandBus(router, cloudPub, azureSub, &connSettings.CloudConnectionInfo, commandHandlers)
+	routingbus.CommandBus(router, cloudPub, azureSub, &connSettings.RemoteConnectionInfo, commandHandlers)
 
 	go func() {
 		ctx, cancel := context.WithCancel(context.Background())

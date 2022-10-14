@@ -40,7 +40,7 @@ func CreateTelemetryHandler(topics string) handlers.TelemetryHandler {
 }
 
 // Init gets the device ID that is needed for the message forwarding towards Azure IoT Hub.
-func (h *telemetryHandler) Init(connInfo *config.CloudConnectionInfo) error {
+func (h *telemetryHandler) Init(connInfo *config.RemoteConnectionInfo) error {
 	h.deviceID = connInfo.DeviceID
 	return nil
 }

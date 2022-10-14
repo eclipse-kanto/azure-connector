@@ -36,7 +36,7 @@ func CreateCommandHandler(topic string) handlers.CommandHandler {
 }
 
 // Init does nothing.
-func (h *commandHandler) Init(connInfo *config.CloudConnectionInfo) error {
+func (h *commandHandler) Init(connInfo *config.RemoteConnectionInfo) error {
 	return nil
 }
 

@@ -53,7 +53,7 @@ type dummyMessageHandler struct {
 	handleErr  error
 }
 
-func (h *dummyMessageHandler) Init(connInfo *config.CloudConnectionInfo) error {
+func (h *dummyMessageHandler) Init(connInfo *config.RemoteConnectionInfo) error {
 	return h.initErr
 }
 
