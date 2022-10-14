@@ -53,19 +53,13 @@ type SharedAccessKey struct {
 
 // AzureConnectionSettings contains the configuration data for establishing connection to the Azure IoT Hub.
 type AzureConnectionSettings struct {
-	*CloudConnectionInfo
+	CloudConnectionInfo
 
 	DeviceCert    string
 	DeviceKey     string
 	TokenValidity time.Duration
 
 	*SharedAccessKey
-}
-
-func newEmptyConnectionSettings() *AzureConnectionSettings {
-	return &AzureConnectionSettings{
-		CloudConnectionInfo: &CloudConnectionInfo{},
-	}
 }
 
 // PrepareAzureConnectionSettings prepares the configuration data for establishing connection to the Azure IoT Hub, allowing usage of IDScopeProvider.
@@ -130,7 +124,7 @@ func PrepareAzureCertificateConnectionSettings(
 	keyFileReader io.Reader,
 ) (*AzureConnectionSettings, error) {
 	var err error
-	connSettings := newEmptyConnectionSettings()
+	connSettings := &AzureConnectionSettings{}
 	if err = attachCertificateInfo(connSettings, certFileReader, keyFileReader); err != nil {
 		return nil, err
 	}
@@ -156,7 +150,7 @@ func PrepareAzureProvisioningConnectionSettings(
 	certFileReader io.Reader,
 	keyFileReader io.Reader,
 ) (*AzureConnectionSettings, error) {
-	connSettings := newEmptyConnectionSettings()
+	connSettings := &AzureConnectionSettings{}
 	err := attachCertificateInfo(connSettings, certFileReader, keyFileReader)
 	if err != nil {
 		return nil, err
@@ -203,7 +197,7 @@ func CreateAzureSASTokenConnectionSettings(
 	logger logger.Logger,
 ) (*AzureConnectionSettings, error) {
 	var err error
-	connSettings := newEmptyConnectionSettings()
+	connSettings := &AzureConnectionSettings{}
 	if value, ok := connStringProperties[propertyKeyHostName]; ok {
 		connSettings.HostName = value
 	} else {

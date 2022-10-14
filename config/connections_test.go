@@ -36,7 +36,7 @@ func TestCreateAzureClientNoCacert(t *testing.T) {
 	}
 	settings := &config.AzureSettings{}
 	connSettings := &config.AzureConnectionSettings{
-		CloudConnectionInfo: &config.CloudConnectionInfo{
+		CloudConnectionInfo: config.CloudConnectionInfo{
 			DeviceID: "dummy-device",
 			HostName: "dummy-hub.azure-devices.net",
 			HubName:  "dummy-hub",

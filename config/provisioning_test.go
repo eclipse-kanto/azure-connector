@@ -70,7 +70,7 @@ func TestDeviceDataFromRequestCorrectly(t *testing.T) {
 	var writer bytes.Buffer
 	provisioningService.Init(mockClient, &writer)
 
-	connSettings := createTestAzureConnectionSettings()
+	connSettings := &config.AzureConnectionSettings{}
 	connSettings.DeviceKey = test.CertificateKey()
 	_, err := provisioningService.GetDeviceData("", connSettings)
 	require.Error(t, err)
@@ -97,7 +97,7 @@ func TestDeviceDataFromRequestSkippingPSSCorrectly(t *testing.T) {
 	mockClient.EXPECT().Do(gomock.Any()).Return(mockAzureDeviceRegisterRes, nil).Times(1)
 	mockClient.EXPECT().Get(gomock.Any()).Return(mockAzureGetInfoRes, nil).Times(1)
 
-	connSettings := createTestAzureConnectionSettings()
+	connSettings := &config.AzureConnectionSettings{}
 	deviceData, err := provisioningService.GetDeviceData(testScopeId, connSettings)
 	require.NoError(t, err)
 	assert.Equal(t, deviceData.AssignedHub, provisioningAssignedHub)
@@ -127,7 +127,7 @@ func TestDeviceDataFromRequestWithPersistToDiskError(t *testing.T) {
 	mockClient.EXPECT().Do(gomock.Any()).Return(mockAzureDeviceRegisterRes, nil).Times(1)
 	mockClient.EXPECT().Get(gomock.Any()).Return(mockAzureGetInfoRes, nil).Times(1)
 
-	connSettings := createTestAzureConnectionSettings()
+	connSettings := &config.AzureConnectionSettings{}
 	deviceData, err := provisioningService.GetDeviceData(testScopeId, connSettings)
 	assert.NoError(t, err)
 	assert.Equal(t, deviceData.AssignedHub, provisioningAssignedHub)
@@ -144,7 +144,7 @@ func TestDeviceDataFromAzureDPSRegisterRequestCorrectly(t *testing.T) {
 	var writer bytes.Buffer
 	provisioningService.Init(mockClient, &writer)
 
-	connSettings := createTestAzureConnectionSettings()
+	connSettings := &config.AzureConnectionSettings{}
 	connSettings.DeviceKey = test.CertificateKey()
 	_, err := provisioningService.GetDeviceData("", connSettings)
 	require.Error(t, err)
@@ -165,7 +165,7 @@ func TestDeviceDataFromDiskCorrectly(t *testing.T) {
 	mockClient.EXPECT().Do(gomock.Any()).Return(nil, nil).Times(0)
 	mockClient.EXPECT().Get(gomock.Any()).Return(nil, nil).Times(0)
 
-	connSettings := createTestAzureConnectionSettings()
+	connSettings := &config.AzureConnectionSettings{}
 	deviceData, err := provisioningService.GetDeviceData("", connSettings)
 	require.NoError(t, err)
 	assert.Equal(t, deviceData.AssignedHub, provisioningAssignedHub)
@@ -194,7 +194,7 @@ func TestDeviceDataFromRequestWithEmptyDeviceInfo(t *testing.T) {
 	mockClient.EXPECT().Do(gomock.Any()).Return(mockAzureDeviceRegisterRes, nil).Times(1)
 	mockClient.EXPECT().Get(gomock.Any()).Return(mockAzureGetInfoRes, nil).Times(1)
 
-	connSettings := createTestAzureConnectionSettings()
+	connSettings := &config.AzureConnectionSettings{}
 	_, err := provisioningService.GetDeviceData(testScopeId, connSettings)
 	assert.Error(t, err)
 }
@@ -226,7 +226,7 @@ func TestDeviceDataFromRequestWithEmptyRegistrationState(t *testing.T) {
 	mockClient.EXPECT().Do(gomock.Any()).Return(mockAzureDeviceRegisterRes, nil).Times(1)
 	mockClient.EXPECT().Get(gomock.Any()).Return(mockAzureGetInfoRes, nil).Times(1)
 
-	connSettings := createTestAzureConnectionSettings()
+	connSettings := &config.AzureConnectionSettings{}
 	_, err := provisioningService.GetDeviceData(testScopeId, connSettings)
 	assert.Error(t, err)
 }
@@ -328,7 +328,7 @@ func TestDeviceDataFromRequestWithErrors(t *testing.T) {
 			mockClient.EXPECT().Do(gomock.Any()).Return(mockAzureDeviceRegisterRes, nil).Times(1)
 			mockClient.EXPECT().Get(gomock.Any()).Return(mockAzureGetInfoRes, nil).Times(1)
 
-			connSettings := createTestAzureConnectionSettings()
+			connSettings := &config.AzureConnectionSettings{}
 			_, err := provisioningService.GetDeviceData(testScopeId, connSettings)
 			assert.Error(t, err)
 		})
@@ -351,7 +351,7 @@ func TestDeviceDataFromRequestWithAzureDPSGetInfoErrorResponse(t *testing.T) {
 	mockClient.EXPECT().Do(gomock.Any()).Return(mockAzureDeviceRegisterRes, nil).Times(1)
 	mockClient.EXPECT().Get(gomock.Any()).Return(nil, errors.New(responseError)).Times(1)
 
-	connSettings := createTestAzureConnectionSettings()
+	connSettings := &config.AzureConnectionSettings{}
 	_, err := provisioningService.GetDeviceData(testScopeId, connSettings)
 	assert.Error(t, err)
 }
@@ -372,7 +372,7 @@ func TestDeviceDataFromRequestWithAzureDPSRegisterErrorReadResponseBody(t *testi
 	mockClient.EXPECT().Do(gomock.Any()).Return(mockAzureDeviceRegisterRes, nil).Times(1)
 	mockClient.EXPECT().Get(gomock.Any()).Return(nil, nil).Times(0)
 
-	connSettings := createTestAzureConnectionSettings()
+	connSettings := &config.AzureConnectionSettings{}
 	_, err := provisioningService.GetDeviceData(testScopeId, connSettings)
 	assert.Error(t, err)
 }
@@ -394,7 +394,7 @@ func TestDeviceDataFromRequestWithAzureDPSGetInfoErrorReadResponseBody(t *testin
 	mockClient.EXPECT().Do(gomock.Any()).Return(mockAzureDeviceRegisterRes, nil).Times(1)
 	mockClient.EXPECT().Get(gomock.Any()).Return(mockAzureGetInfoRes, nil).Times(1)
 
-	connSettings := createTestAzureConnectionSettings()
+	connSettings := &config.AzureConnectionSettings{}
 	_, err := provisioningService.GetDeviceData(testScopeId, connSettings)
 	assert.Error(t, err)
 }
@@ -442,7 +442,7 @@ func TestDeviceDataFromDiskWithErrors(t *testing.T) {
 			writer.WriteString(testValue.provisioningFileContent)
 			provisioningService.Init(nil, &writer)
 
-			connSettings := createTestAzureConnectionSettings()
+			connSettings := &config.AzureConnectionSettings{}
 			_, err := provisioningService.GetDeviceData("", connSettings)
 			assert.Error(t, err)
 		})
@@ -454,7 +454,7 @@ func TestDeviceDataFromDiskWithCorruptedProvisioningData(t *testing.T) {
 	errorFileWriter := test.CreateErrorReadWriterCloser()
 	provisioningService.Init(nil, errorFileWriter)
 
-	connSettings := createTestAzureConnectionSettings()
+	connSettings := &config.AzureConnectionSettings{}
 	_, err := provisioningService.GetDeviceData("", connSettings)
 	assert.Error(t, err)
 }
@@ -469,10 +469,4 @@ func mockRequest(body io.ReadCloser, statusCode int, header http.Header) *http.R
 
 func bodyFromStr(body string) io.ReadCloser {
 	return ioutil.NopCloser(bytes.NewReader([]byte(body)))
-}
-
-func createTestAzureConnectionSettings() *config.AzureConnectionSettings {
-	return &config.AzureConnectionSettings{
-		CloudConnectionInfo: &config.CloudConnectionInfo{},
-	}
 }

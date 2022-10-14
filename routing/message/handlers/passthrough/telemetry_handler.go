@@ -59,7 +59,7 @@ func (h *telemetryHandler) Name() string {
 	return telemetryHandlerName
 }
 
-// Topic returns the configurable list of topics that are used for subscription on the local message broker.
+// Topics returns the configurable list of topics that are used for subscription on the local message broker.
 func (h *telemetryHandler) Topics() string {
 	return h.topics
 }
