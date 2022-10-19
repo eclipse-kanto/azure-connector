@@ -18,7 +18,7 @@ import (
 	azurecfg "github.com/eclipse-kanto/azure-connector/config"
 )
 
-// AzureSettingsExt extends the general configurable data of the azure Connector with configuration for the message handlers.
+// AzureSettingsExt extends the general configurable data of the azure connector with configuration for the message handlers.
 type AzureSettingsExt struct {
 	*azurecfg.AzureSettings
 	PassthroughCommandTopic    string `json:"passthroughCommandTopic"`

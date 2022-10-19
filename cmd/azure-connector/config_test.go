@@ -27,7 +27,7 @@ const (
 	testConfig = "../../config/testdata/config.json"
 )
 
-func TestConfig(t *testing.T) {
+func TestConfigFile(t *testing.T) {
 	settings := defaultAzureSettingsExt()
 	assert.NoError(t, config.ReadConfig(testConfig, settings))
 	assert.Equal(t, "from-device-to-cloud", settings.PassthroughTelemetryTopics)
