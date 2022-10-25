@@ -15,15 +15,18 @@ package passthrough
 import (
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill/message"
-	"github.com/eclipse-kanto/azure-connector/config"
-	"github.com/eclipse-kanto/azure-connector/routing"
+
 	"github.com/eclipse-kanto/suite-connector/connector"
 
+	"github.com/eclipse-kanto/azure-connector/config"
+	"github.com/eclipse-kanto/azure-connector/routing"
 	"github.com/eclipse-kanto/azure-connector/routing/message/handlers"
 )
 
 const (
 	telemetryHandlerName = "passthrough_telemetry_handler"
+
+	topicsEvent = "event/#,e/#,telemetry/#,t/#,command//+/res/#,c//+/s/#"
 )
 
 // telemetryHandler forwards incoming device messages published on certain local topics to the Azure Iot Hub.
@@ -33,9 +36,9 @@ type telemetryHandler struct {
 }
 
 // CreateTelemetryHandler instantiates a new passthrough telemetry handler that forward messages received from local message broker on the given topics as device-to-cloud messages to Azure IoT Hub.
-func CreateTelemetryHandler(topics string) handlers.TelemetryHandler {
+func CreateTelemetryHandler() handlers.TelemetryHandler {
 	return &telemetryHandler{
-		topics: topics,
+		topics: topicsEvent,
 	}
 }
 

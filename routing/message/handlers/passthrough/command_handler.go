@@ -13,26 +13,33 @@
 package passthrough
 
 import (
+	"encoding/json"
+
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill/message"
-	"github.com/eclipse-kanto/azure-connector/config"
+	"github.com/pkg/errors"
+
 	"github.com/eclipse-kanto/suite-connector/connector"
 
+	"github.com/eclipse-kanto/azure-connector/config"
+	"github.com/eclipse-kanto/azure-connector/routing"
 	"github.com/eclipse-kanto/azure-connector/routing/message/handlers"
+
+	"github.com/eclipse/ditto-clients-golang/protocol"
 )
 
-const commandHandlerName = "passthrough_command_handler"
+const (
+	commandHandlerName = "passthrough_command_handler"
+
+	msgInvalidCloudCommand = "invalid cloud command"
+)
 
 // A simple command passthrough handler that forwards all cloud-to-device messages from Azure IoT Hub to local MQTT broker on a preconfigured topic.
-type commandHandler struct {
-	topic string
-}
+type commandHandler struct{}
 
 // CreateCommandHandler instantiates a new command handler that forward cloud-to-device messages to the local message broker using the given topic.
-func CreateCommandHandler(topic string) handlers.CommandHandler {
-	return &commandHandler{
-		topic: topic,
-	}
+func CreateCommandHandler() handlers.CommandHandler {
+	return new(commandHandler)
 }
 
 // Init does nothing.
@@ -42,10 +49,19 @@ func (h *commandHandler) Init(connInfo *config.RemoteConnectionInfo) error {
 
 // HandleMessage creates a new message with the same payload as the incoming message and sets the configured local topic to publish it.
 func (h *commandHandler) HandleMessage(msg *message.Message) ([]*message.Message, error) {
-	msgID := watermill.NewUUID()
-	outgoingMessage := message.NewMessage(msgID, msg.Payload)
-	outgoingMessage.SetContext(connector.SetTopicToCtx(outgoingMessage.Context(), h.topic))
-	return []*message.Message{outgoingMessage}, nil
+	command := protocol.Envelope{Headers: protocol.NewHeaders()}
+
+	if err := json.Unmarshal(msg.Payload, &command); err != nil {
+		return nil, errors.Wrap(err, msgInvalidCloudCommand)
+	}
+
+	l := message.NewMessage(watermill.NewUUID(), msg.Payload)
+	l.SetContext(connector.SetTopicToCtx(l.Context(), routing.CreateLocalCmdTopicLong(&command)))
+
+	s := message.NewMessage(watermill.NewUUID(), msg.Payload)
+	s.SetContext(connector.SetTopicToCtx(s.Context(), routing.CreateLocalCmdTopicShort(&command)))
+
+	return []*message.Message{l, s}, nil
 }
 
 // Name returns the message handler name.

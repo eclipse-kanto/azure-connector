@@ -24,15 +24,13 @@ import (
 )
 
 func TestCreateTelemetryHandler(t *testing.T) {
-	topic := "localTopic1,localTopic2,localTopic3"
-
-	messageHandler := CreateTelemetryHandler(topic)
+	messageHandler := CreateTelemetryHandler()
 	assert.Equal(t, telemetryHandlerName, messageHandler.Name())
-	assert.Equal(t, topic, messageHandler.Topics())
+	assert.Equal(t, topicsEvent, messageHandler.Topics())
 }
 
 func TestHandleTelemetryMessage(t *testing.T) {
-	handler := CreateTelemetryHandler("telemetry_topic")
+	handler := CreateTelemetryHandler()
 	require.NoError(t, handler.Init(&config.RemoteConnectionInfo{DeviceID: "dummy_device"}))
 
 	payload := "dummy_message"

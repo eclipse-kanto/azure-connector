@@ -15,6 +15,8 @@ package routing
 import (
 	"fmt"
 	"net/url"
+
+	"github.com/eclipse/ditto-clients-golang/protocol"
 )
 
 const (
@@ -26,6 +28,9 @@ const (
 
 	remoteCloudTopicFmt     = "devices/%s/messages/devicebound/#"
 	remoteTelemetryTopicFmt = "devices/%s/messages/events/%s"
+
+	localCmdTopicLongFmt  = "command//%s:%s/req//%s"
+	localCmdTopicShortFmt = "c//%s:%s/q//%s"
 )
 
 // CreateRemoteCloudTopic constructs the remote MQTT topic for receiving C2D messages from an Azure IoT Hub device.
@@ -42,4 +47,14 @@ func CreateTelemetryTopic(deviceID, msgID string) string {
 		msgProps[keyMessageID] = []string{msgID}
 	}
 	return fmt.Sprintf(remoteTelemetryTopicFmt, deviceID, msgProps.Encode())
+}
+
+// CreateLocalCmdTopicLong constructs the local MQTT topic for receiving C2D messages from an Azure IoT Hub device.
+func CreateLocalCmdTopicLong(env *protocol.Envelope) string {
+	return fmt.Sprintf(localCmdTopicLongFmt, env.Topic.Namespace, env.Topic.EntityName, env.Topic.Action)
+}
+
+// CreateLocalCmdTopicShort constructs the local MQTT topic for receiving C2D messages from an Azure IoT Hub device.
+func CreateLocalCmdTopicShort(env *protocol.Envelope) string {
+	return fmt.Sprintf(localCmdTopicShortFmt, env.Topic.Namespace, env.Topic.EntityName, env.Topic.Action)
 }
