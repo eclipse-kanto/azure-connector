@@ -35,7 +35,7 @@ func TestHandleCommand(t *testing.T) {
 	require.NoError(t, messageHandler.Init(nil))
 
 	payload := `{
-		"topic": "org.eclipse.kanto/Test:demo/things/live/messages/toggle",
+		"topic": "org.eclipse.kanto/Test:testing/things/live/messages/toggle",
 		"headers": {
 			"correlation-id": "f0a03c95-9526-4995-9718-2fb5cc866200",
 			"version": 2,
@@ -46,7 +46,7 @@ func TestHandleCommand(t *testing.T) {
 			"content-type": "application/json",
 			"accept-encoding": "gzip, deflate, br"
 		},
-		"path": "/features/demo:fim:BinarySwitchExt:1/inbox/messages/toggle",
+		"path": "/features/kanto:testing:BinarySwitchExt:1/inbox/messages/toggle",
 		"value": {}
 	}`
 
