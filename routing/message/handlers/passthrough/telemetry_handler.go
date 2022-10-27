@@ -29,13 +29,12 @@ const (
 	topicsEvent = "event/#,e/#,telemetry/#,t/#,command//+/res/#,c//+/s/#"
 )
 
-// telemetryHandler forwards incoming device messages published on certain local topics to the Azure Iot Hub.
 type telemetryHandler struct {
 	deviceID string
 	topics   string
 }
 
-// CreateTelemetryHandler instantiates a new passthrough telemetry handler that forward messages received from local message broker on the given topics as device-to-cloud messages to Azure IoT Hub.
+// CreateTelemetryHandler instantiates a new passthrough telemetry handler that forwards messages received from local message broker on events, telemetry and responses topics as device-to-cloud messages to Azure IoT Hub.
 func CreateTelemetryHandler() handlers.TelemetryHandler {
 	return &telemetryHandler{
 		topics: topicsEvent,

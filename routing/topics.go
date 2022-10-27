@@ -29,8 +29,8 @@ const (
 	remoteCloudTopicFmt     = "devices/%s/messages/devicebound/#"
 	remoteTelemetryTopicFmt = "devices/%s/messages/events/%s"
 
-	localCmdTopicLongFmt  = "command//%s:%s/req//%s"
-	localCmdTopicShortFmt = "c//%s:%s/q//%s"
+	localCmdTopicLongFmt  = "command//%s:%s/req/%s/%s"
+	localCmdTopicShortFmt = "c//%s:%s/q/%s/%s"
 )
 
 // CreateRemoteCloudTopic constructs the remote MQTT topic for receiving C2D messages from an Azure IoT Hub device.
@@ -51,10 +51,20 @@ func CreateTelemetryTopic(deviceID, msgID string) string {
 
 // CreateLocalCmdTopicLong constructs the local MQTT topic for receiving C2D messages from an Azure IoT Hub device.
 func CreateLocalCmdTopicLong(env *protocol.Envelope) string {
-	return fmt.Sprintf(localCmdTopicLongFmt, env.Topic.Namespace, env.Topic.EntityName, env.Topic.Action)
+	return fmt.Sprintf(localCmdTopicLongFmt,
+		env.Topic.Namespace,
+		env.Topic.EntityName,
+		env.Headers.CorrelationID(),
+		env.Topic.Action,
+	)
 }
 
 // CreateLocalCmdTopicShort constructs the local MQTT topic for receiving C2D messages from an Azure IoT Hub device.
 func CreateLocalCmdTopicShort(env *protocol.Envelope) string {
-	return fmt.Sprintf(localCmdTopicShortFmt, env.Topic.Namespace, env.Topic.EntityName, env.Topic.Action)
+	return fmt.Sprintf(localCmdTopicShortFmt,
+		env.Topic.Namespace,
+		env.Topic.EntityName,
+		env.Headers.CorrelationID(),
+		env.Topic.Action,
+	)
 }

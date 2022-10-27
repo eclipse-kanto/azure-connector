@@ -34,10 +34,9 @@ const (
 	msgInvalidCloudCommand = "invalid cloud command"
 )
 
-// A simple command passthrough handler that forwards all cloud-to-device messages from Azure IoT Hub to local MQTT broker on a preconfigured topic.
 type commandHandler struct{}
 
-// CreateCommandHandler instantiates a new command handler that forward cloud-to-device messages to the local message broker using the given topic.
+// CreateCommandHandler instantiates a new command handler that forwards cloud-to-device messages to the local message broker using topics command//+/req/# and c//+/q/#.
 func CreateCommandHandler() handlers.CommandHandler {
 	return new(commandHandler)
 }
@@ -47,7 +46,7 @@ func (h *commandHandler) Init(connInfo *config.RemoteConnectionInfo) error {
 	return nil
 }
 
-// HandleMessage creates a new message with the same payload as the incoming message and sets the configured local topic to publish it.
+// HandleMessage creates 2 new message with the same payload as the incoming message and sets the topic to command//+/req/# and c//+/q/# to publish it.
 func (h *commandHandler) HandleMessage(msg *message.Message) ([]*message.Message, error) {
 	command := protocol.Envelope{Headers: protocol.NewHeaders()}
 
