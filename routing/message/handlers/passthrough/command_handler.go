@@ -46,7 +46,7 @@ func (h *commandHandler) Init(connInfo *config.RemoteConnectionInfo) error {
 	return nil
 }
 
-// HandleMessage creates 2 new messages with the same payload which are to Hono command with short and long topic
+// HandleMessage creates 2 new messages with the same payload, using Hono command topic and its shorthand version
 func (h *commandHandler) HandleMessage(msg *message.Message) ([]*message.Message, error) {
 	command := protocol.Envelope{Headers: protocol.NewHeaders()}
 
