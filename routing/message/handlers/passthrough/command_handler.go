@@ -36,7 +36,7 @@ const (
 
 type commandHandler struct{}
 
-// CreateCommandHandler instantiates a new command handler that forwards cloud-to-device messages to the local message broker using topics command//+/req/# and c//+/q/#.
+// CreateCommandHandler instantiates a new command handler that forwards cloud-to-device messages to the local message broker as Hono commands.
 func CreateCommandHandler() handlers.CommandHandler {
 	return new(commandHandler)
 }
@@ -46,7 +46,7 @@ func (h *commandHandler) Init(connInfo *config.RemoteConnectionInfo) error {
 	return nil
 }
 
-// HandleMessage creates 2 new message with the same payload as the incoming message and sets the topic to command//+/req/# and c//+/q/# to publish it.
+// HandleMessage creates 2 new messages with the same payload which are to Hono command with short and long topic
 func (h *commandHandler) HandleMessage(msg *message.Message) ([]*message.Message, error) {
 	command := protocol.Envelope{Headers: protocol.NewHeaders()}
 

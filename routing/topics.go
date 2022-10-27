@@ -51,17 +51,16 @@ func CreateTelemetryTopic(deviceID, msgID string) string {
 
 // CreateLocalCmdTopicLong constructs the local MQTT topic for receiving C2D messages from an Azure IoT Hub device.
 func CreateLocalCmdTopicLong(env *protocol.Envelope) string {
-	return fmt.Sprintf(localCmdTopicLongFmt,
-		env.Topic.Namespace,
-		env.Topic.EntityName,
-		env.Headers.CorrelationID(),
-		env.Topic.Action,
-	)
+	return createLocalCmdTopic(localCmdTopicLongFmt, env)
 }
 
 // CreateLocalCmdTopicShort constructs the local MQTT topic for receiving C2D messages from an Azure IoT Hub device.
 func CreateLocalCmdTopicShort(env *protocol.Envelope) string {
-	return fmt.Sprintf(localCmdTopicShortFmt,
+	return createLocalCmdTopic(localCmdTopicShortFmt, env)
+}
+
+func createLocalCmdTopic(template string, env *protocol.Envelope) string {
+	return fmt.Sprintf(template,
 		env.Topic.Namespace,
 		env.Topic.EntityName,
 		env.Headers.CorrelationID(),
