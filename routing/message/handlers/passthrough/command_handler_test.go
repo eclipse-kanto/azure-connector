@@ -25,13 +25,13 @@ import (
 )
 
 func TestCreateCommandHandler(t *testing.T) {
-	messageHandler := CreateCommandHandler()
+	messageHandler := CreateDefaultCommandHandler()
 	require.NoError(t, messageHandler.Init(nil))
 	assert.Equal(t, commandHandlerName, messageHandler.Name())
 }
 
 func TestHandleOneWayCommand(t *testing.T) {
-	messageHandler := CreateCommandHandler()
+	messageHandler := CreateDefaultCommandHandler()
 	require.NoError(t, messageHandler.Init(nil))
 
 	payload := `{
@@ -61,7 +61,7 @@ func TestHandleOneWayCommand(t *testing.T) {
 }
 
 func TestHandleCommand(t *testing.T) {
-	messageHandler := CreateCommandHandler()
+	messageHandler := CreateDefaultCommandHandler()
 	require.NoError(t, messageHandler.Init(nil))
 
 	payload := `{

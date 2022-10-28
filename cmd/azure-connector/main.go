@@ -82,11 +82,11 @@ func main() {
 }
 
 func telemetryHandlers(settings *azurecfg.AzureSettings) []handlers.TelemetryHandler {
-	passthroughHandler := passthrough.CreateTelemetryHandler()
+	passthroughHandler := passthrough.CreateDefaultTelemetryHandler()
 	return []handlers.TelemetryHandler{passthroughHandler}
 }
 
 func commandHandlers(settings *azurecfg.AzureSettings) []handlers.CommandHandler {
-	passthroughHandler := passthrough.CreateCommandHandler()
+	passthroughHandler := passthrough.CreateDefaultCommandHandler()
 	return []handlers.CommandHandler{passthroughHandler}
 }

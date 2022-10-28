@@ -34,10 +34,15 @@ type telemetryHandler struct {
 	topics   string
 }
 
-// CreateTelemetryHandler instantiates a new passthrough telemetry handler that forwards messages received from local message broker on event, telemetry and command response topics as device-to-cloud messages to Azure IoT Hub.
-func CreateTelemetryHandler() handlers.TelemetryHandler {
+// CreateDefaultTelemetryHandler instantiates a new passthrough telemetry handler that forwards messages received from local message broker on event, telemetry and command response topics as device-to-cloud messages to Azure IoT Hub.
+func CreateDefaultTelemetryHandler() handlers.TelemetryHandler {
+	return CreateTelemetryHandler(topicsEvent)
+}
+
+// CreateTelemetryHandler instantiates a new passthrough telemetry handler that forward messages received from local message broker on the given topics as device-to-cloud messages to Azure IoT Hub.
+func CreateTelemetryHandler(topics string) handlers.TelemetryHandler {
 	return &telemetryHandler{
-		topics: topicsEvent,
+		topics: topics,
 	}
 }
 

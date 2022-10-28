@@ -17,20 +17,31 @@ import (
 	"testing"
 
 	"github.com/ThreeDotsLabs/watermill/message"
+
 	"github.com/eclipse-kanto/azure-connector/config"
+
 	"github.com/eclipse-kanto/suite-connector/connector"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func TestCreateTelemetryHandler(t *testing.T) {
-	messageHandler := CreateTelemetryHandler()
+func TestCreateDefaultTelemetryHandler(t *testing.T) {
+	messageHandler := CreateDefaultTelemetryHandler()
 	assert.Equal(t, telemetryHandlerName, messageHandler.Name())
 	assert.Equal(t, topicsEvent, messageHandler.Topics())
 }
 
+func TestCreateTelemetryHandler(t *testing.T) {
+	topic := "localTopic1,localTopic2,localTopic3"
+
+	messageHandler := CreateTelemetryHandler(topic)
+	assert.Equal(t, telemetryHandlerName, messageHandler.Name())
+	assert.Equal(t, topic, messageHandler.Topics())
+}
+
 func TestHandleTelemetryMessage(t *testing.T) {
-	handler := CreateTelemetryHandler()
+	handler := CreateTelemetryHandler("telemetry_topic")
 	require.NoError(t, handler.Init(&config.RemoteConnectionInfo{DeviceID: "dummy_device"}))
 
 	payload := "dummy_message"

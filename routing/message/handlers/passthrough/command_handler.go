@@ -36,8 +36,8 @@ const (
 
 type commandHandler struct{}
 
-// CreateCommandHandler instantiates a new command handler that forwards cloud-to-device messages to the local message broker as Hono commands.
-func CreateCommandHandler() handlers.CommandHandler {
+// CreateDefaultCommandHandler instantiates a new command handler that forwards cloud-to-device messages to the local message broker as Hono commands.
+func CreateDefaultCommandHandler() handlers.CommandHandler {
 	return new(commandHandler)
 }
 
