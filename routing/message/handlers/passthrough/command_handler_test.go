@@ -24,7 +24,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCreateCommandHandler(t *testing.T) {
+func TestCreateDefaultCommandHandler(t *testing.T) {
 	messageHandler := CreateDefaultCommandHandler()
 	require.NoError(t, messageHandler.Init(nil))
 	assert.Equal(t, commandHandlerName, messageHandler.Name())
