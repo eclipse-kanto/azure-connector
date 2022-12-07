@@ -1,6 +1,6 @@
 module github.com/eclipse-kanto/azure-connector
 
-go 1.19
+go 1.17
 
 require (
 	github.com/ThreeDotsLabs/watermill v1.1.1
