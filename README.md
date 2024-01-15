@@ -1,6 +1,8 @@
-![Kanto logo](https://github.com/eclipse-kanto/kanto/raw/main/logo/kanto.svg)
+[![Kanto logo](https://github.com/eclipse-kanto/kanto/raw/main/logo/kanto.svg)](https://eclipse.dev/kanto/)
 
 # Eclipse Kanto - Azure Connector
+
+[![Coverage](https://github.com/eclipse-kanto/azure-connector/wiki/coverage.svg)](#)
 
 The suite connector is the main coordination center which forwards the local
 and remote messages. Messages processed by the suite connector will
